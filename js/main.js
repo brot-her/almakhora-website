@@ -245,25 +245,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ
-function initFixedHeader() {
-    const header = document.querySelector('header');
-    if (!header) return;
-
-    let lastScroll = 0;
-    const headerHeight = header.offsetHeight;
-
-    // Устанавливаем начальный отступ для body
-    document.body.style.paddingTop = headerHeight + 'px';
-
-    window.addEventListener('scroll', function() {
-        const currentScroll = window.pageYOffset;
-
-        // Добавляем/убираем тень и прозрачность при скролле
-        if (currentScroll > 50) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
-        }
 
         // Плавное скрытие/показ при скролле
         if (currentScroll > lastScroll && currentScroll > headerHeight) {
