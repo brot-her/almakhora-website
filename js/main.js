@@ -1,5 +1,5 @@
-// Alma Khora Art Studio - Main JavaScript
-console.log('Alma Khora website loaded successfully');
+// Alma Khora Art Studio - Main JavaScript (Исправленная версия)
+console.log('Alma Khora website loaded successfully - Header fixed version');
 
 document.addEventListener('DOMContentLoaded', function() {
     // ИНИЦИАЛИЗАЦИЯ ПЕРЕМЕННЫХ
@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modalWorkshopTitle');
     const closeModalBtn = document.querySelector('.close-modal');
     const modalCloseBtn = document.querySelector('.modal-close-btn');
+
+    // Переменные для управления хедером
+    let isHeaderFixed = false;
+    let headerHeight = 0;
 
     // 1. ТЕКУЩИЙ ГОД В ФУТЕРЕ
     if (yearSpan) {
@@ -75,8 +79,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         document.body.style.overflow = 'auto';
                     }
 
-                    const headerHeight = document.querySelector('header') ? document.querySelector('header').offsetHeight : 80;
-                    const targetPosition = targetElement.offsetTop - headerHeight;
+                    const currentHeaderHeight = document.querySelector('header') ? document.querySelector('header').offsetHeight : headerHeight;
+                    const targetPosition = targetElement.offsetTop - currentHeaderHeight;
 
                     window.scrollTo({
                         top: targetPosition,
@@ -254,29 +258,79 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
     }
 
-    // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ
+    // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ (ИСПРАВЛЕННАЯ ВЕРСИЯ)
     function initFixedHeader() {
         const header = document.querySelector('header');
-        if (!header) return;
+        if (!header) {
+            console.error('Header element not found');
+            return;
+        }
 
-        const headerHeight = header.offsetHeight;
+        console.log('Initializing fixed header...');
 
-        // Устанавливаем начальный отступ для body
+        // 1. Сбрасываем все возможные трансформации
+        header.style.transform = 'translateY(0) !important';
+        header.style.transition = 'transform 0.3s ease';
+
+        // 2. Добавляем CSS класс для дополнительной защиты
+        header.classList.add('fixed-header');
+
+        // 3. Получаем высоту хедера
+        headerHeight = header.offsetHeight;
+        console.log('Header height:', headerHeight);
+
+        // 4. Устанавливаем отступ для body
         document.body.style.paddingTop = headerHeight + 'px';
+        document.body.classList.add('has-fixed-header');
 
-        // Просто добавляем тень при скролле (без скрытия хедера)
-        window.addEventListener('scroll', function() {
-            if (window.pageYOffset > 50) {
+        // 5. Добавляем CSS переменную для высоты хедера
+        document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
+
+        // 6. Защита от скрытия хедера
+        const protectHeader = function() {
+            // Гарантируем что хедер всегда виден
+            header.style.transform = 'translateY(0)';
+
+            // Добавляем/убираем тень при скролле (опционально)
+            if (window.scrollY > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
+        };
+
+        // 7. Устанавливаем обработчик скролла
+        window.addEventListener('scroll', protectHeader, { passive: true });
+
+        // 8. Защита от других скриптов, которые могут скрывать хедер
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                    const currentTransform = header.style.transform || '';
+                    if (currentTransform.includes('translateY(-') || currentTransform.includes('translateY( -')) {
+                        console.warn('Header was hidden by another script, restoring...');
+                        header.style.transform = 'translateY(0)';
+                    }
+                }
+            });
         });
 
-        // Обновляем отступ при изменении размера окна
-        window.addEventListener('resize', function() {
-            document.body.style.paddingTop = header.offsetHeight + 'px';
+        observer.observe(header, {
+            attributes: true,
+            attributeFilter: ['style', 'class']
         });
+
+        // 9. Обновляем высоту при ресайзе
+        window.addEventListener('resize', function() {
+            const newHeight = header.offsetHeight;
+            document.body.style.paddingTop = newHeight + 'px';
+            document.documentElement.style.setProperty('--header-height', newHeight + 'px');
+            headerHeight = newHeight;
+            console.log('Header height updated to:', newHeight);
+        });
+
+        isHeaderFixed = true;
+        console.log('Fixed header initialized successfully');
     }
 
     // 10. ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ
@@ -300,10 +354,46 @@ document.addEventListener('DOMContentLoaded', function() {
         images.forEach(img => imageObserver.observe(img));
     }
 
+    // 11. ОЧИСТКА СТАРЫХ ОБРАБОТЧИКОВ СКРОЛЛА (дополнительная защита)
+    function cleanupOldScrollHandlers() {
+        console.log('Cleaning up old scroll handlers...');
+
+        // Создаем чистую функцию без логики скрытия
+        const cleanScrollHandler = function() {
+            // Минимальная логика только для тени
+            const header = document.querySelector('header');
+            if (header) {
+                if (window.scrollY > 50) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            }
+        };
+
+        // Заменяем window.onscroll
+        window.onscroll = cleanScrollHandler;
+
+        // Удаляем все обработчики через клонирование window (нельзя напрямую)
+        // Вместо этого установим наш обработчик с самым высоким приоритетом
+        window.addEventListener('scroll', function(e) {
+            // Останавливаем всплытие только для хедера
+            const header = document.querySelector('header');
+            if (header) {
+                header.style.transform = 'translateY(0)';
+            }
+        }, { capture: true });
+    }
+
     // ИНИЦИАЛИЗАЦИЯ ВСЕХ ФУНКЦИЙ
     function initAll() {
         console.log('Initializing all features...');
 
+        // Сначала фиксируем хедер
+        initFixedHeader();
+        cleanupOldScrollHandlers();
+
+        // Затем остальные функции
         initMobileMenu();
         initSmoothScroll();
         initMenuHighlight();
@@ -311,10 +401,22 @@ document.addEventListener('DOMContentLoaded', function() {
         initParallax();
         initModal();
         initBookingButtons();
-        initFixedHeader();
         initImagePreload();
 
         console.log('All features initialized successfully');
+
+        // Финальная проверка через 1 секунду
+        setTimeout(() => {
+            const header = document.querySelector('header');
+            if (header) {
+                const transform = getComputedStyle(header).transform;
+                console.log('Final header check - Transform:', transform);
+                if (transform !== 'matrix(1, 0, 0, 1, 0, 0)' && transform !== 'none') {
+                    console.warn('Header has unexpected transform, fixing...');
+                    header.style.transform = 'translateY(0)';
+                }
+            }
+        }, 1000);
     }
 
     // ЗАПУСК ИНИЦИАЛИЗАЦИИ
@@ -357,3 +459,65 @@ if (typeof window.closeBookingModal === 'undefined') {
         }
     };
 }
+
+// ДОПОЛНИТЕЛЬНАЯ ЗАЩИТА ДЛЯ ХЕДЕРА
+(function() {
+    // Запускаем после полной загрузки страницы
+    window.addEventListener('load', function() {
+        console.log('Page fully loaded, applying header protection...');
+
+        const header = document.querySelector('header');
+        if (!header) return;
+
+        // 1. Устанавливаем фиксированное положение
+        header.style.position = 'fixed';
+        header.style.top = '0';
+        header.style.left = '0';
+        header.style.width = '100%';
+        header.style.zIndex = '1000';
+
+        // 2. Гарантируем видимость
+        header.style.transform = 'translateY(0)';
+        header.style.transition = 'transform 0.3s ease';
+
+        // 3. Добавляем важные стили через CSSOM
+        const style = document.createElement('style');
+        style.textContent = `
+            /* ЗАЩИТА ХЕДЕРА ОТ СКРЫТИЯ */
+            header.fixed-header {
+                transform: translateY(0) !important;
+                transition: transform 0.3s ease !important;
+            }
+
+            body.has-fixed-header {
+                padding-top: var(--header-height, 80px) !important;
+            }
+
+            @media (max-width: 768px) {
+                body.has-fixed-header {
+                    padding-top: var(--header-height-mobile, 70px) !important;
+                }
+            }
+
+            /* Отключаем любые анимации скрытия */
+            header.hide-on-scroll,
+            header[style*="transform: translateY(-"],
+            header[style*="transform:translateY(-"] {
+                transform: translateY(0) !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 4. Защита от попыток скрыть хедер
+        const originalSetAttribute = header.setAttribute.bind(header);
+        header.setAttribute = function(name, value) {
+            if (name === 'style' && value.includes('translateY(-')) {
+                console.warn('Attempt to hide header blocked');
+                value = value.replace(/transform\s*:\s*translateY\([^)]+\)/g, 'transform: translateY(0)');
+            }
+            originalSetAttribute(name, value);
+        };
+
+        console.log('Header protection applied');
+    });
+})();
