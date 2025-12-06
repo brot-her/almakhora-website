@@ -1,0 +1,40 @@
+{
+  "rewrites": [
+    {
+      "source": "/yandex_verification_123abc.html",
+      "destination": "/api/yandex-verify"
+    },
+    {
+      "source": "/robots.txt",
+      "destination": "/api/robots"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.almakhora.ru"
+        }
+      ],
+      "destination": "https://almakhora.ru/:splat",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Robots-Tag",
+          "value": "index, follow"
+        }
+      ]
+    }
+  ]
+}
