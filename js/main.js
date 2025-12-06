@@ -245,33 +245,43 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ
-    function initFixedHeader() {
-        const header = document.querySelector('header');
-        if (!header) return;
+function initFixedHeader() {
+    const header = document.querySelector('header');
+    if (!header) return;
 
-        let lastScroll = 0;
+    let lastScroll = 0;
+    const headerHeight = header.offsetHeight;
 
-        window.addEventListener('scroll', function() {
-            const currentScroll = window.pageYOffset;
+    // Устанавливаем начальный отступ для body
+    document.body.style.paddingTop = headerHeight + 'px';
 
-            if (currentScroll > 100) {
-                header.classList.add('scrolled');
+    window.addEventListener('scroll', function() {
+        const currentScroll = window.pageYOffset;
 
-                if (currentScroll > lastScroll) {
-                    // Скроллим вниз
-                    header.style.transform = 'translateY(-100%)';
-                } else {
-                    // Скроллим вверх
-                    header.style.transform = 'translateY(0)';
-                }
-            } else {
-                header.classList.remove('scrolled');
-                header.style.transform = 'translateY(0)';
-            }
+        // Добавляем/убираем тень и прозрачность при скролле
+        if (currentScroll > 50) {
+            header.classList.add('scrolled');
+        } else {
+            header.classList.remove('scrolled');
+        }
 
-            lastScroll = currentScroll;
-        });
-    }
+        // Плавное скрытие/показ при скролле
+        if (currentScroll > lastScroll && currentScroll > headerHeight) {
+            // Скроллим вниз - скрываем хедер
+            header.style.transform = 'translateY(-100%)';
+        } else {
+            // Скроллим вверх или вверху - показываем хедер
+            header.style.transform = 'translateY(0)';
+        }
+
+        lastScroll = currentScroll;
+    });
+
+    // Обновляем отступ при изменении размера окна
+    window.addEventListener('resize', function() {
+        document.body.style.paddingTop = header.offsetHeight + 'px';
+    });
+}
 
     // 10. ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ
     function initImagePreload() {

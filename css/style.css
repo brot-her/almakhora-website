@@ -767,3 +767,37 @@ img.loaded {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
+/* ФИКСИРОВАННЫЙ ХЕДЕР */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background-color: #F9F6F0;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 15px rgba(93, 64, 55, 0.1);
+}
+
+/* Добавляем отступ для body, чтобы контент не прятался под фиксированным хедером */
+body {
+    padding-top: 80px; /* Высота хедера */
+}
+
+/* Улучшаем хедер при скролле */
+header.scrolled {
+    background-color: rgba(249, 246, 240, 0.98);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(93, 64, 55, 0.15);
+}
+
+/* Для мобильных устройств уменьшаем высоту */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px; /* Меньшая высота на мобильных */
+    }
+
+    header {
+        padding: 10px 0;
+    }
+}
