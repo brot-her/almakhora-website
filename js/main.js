@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 5. АНИМАЦИЯ ПОЯВЛЕНИЯ ЭЛЕМЕНТОВ
     function initScrollAnimation() {
-        const animatedElements = document.querySelectorAll('.card, .gallery-item, .contact-item, .workshop-card');
+        const animatedElements = document.querySelectorAll('.card, .gallery-item, .contact-item');
 
         if (animatedElements.length === 0) return;
 
@@ -173,14 +173,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Функция открытия модального окна
-        window.bookWorkshop = function(workshopTitle) {
-            modalTitle.textContent = workshopTitle;
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            console.log(`Modal opened for: ${workshopTitle}`);
-        };
-
         // Функция закрытия модального окна
         function closeModal() {
             modal.style.display = 'none';
@@ -214,54 +206,78 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 8. КНОПКИ ЗАПИСИ НА МАСТЕР-КЛАССЫ
     function initBookingButtons() {
-    const bookingButtons = document.querySelectorAll('.card-link, .btn-book, [data-workshop]');
+        const bookingButtons = document.querySelectorAll('.card-link');
 
-    bookingButtons.forEach(button => {
-        // Уберите старый обработчик если есть
-        button.removeEventListener('click', handleBookingClick);
-
-        // Добавьте новый
-        button.addEventListener('click', function(e) {
-            e.preventDefault(); // Это важно!
-
-            // Получаем название мастер-класса
-            let workshopName = '';
-
-            if (this.dataset.workshop) {
-                workshopName = this.dataset.workshop;
-            } else if (this.closest('.card') && this.closest('.card').querySelector('h3')) {
-                workshopName = this.closest('.card').querySelector('h3').textContent;
-            } else {
-                workshopName = 'мастер-класс';
-            }
-
-            // Открываем модальное окно
-            if (typeof window.bookWorkshop === 'function') {
-                window.bookWorkshop(workshopName);
-            }
+        bookingButtons.forEach(button => {
+            // Удалим все существующие обработчики
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
         });
-    });
-}
+
+        // Добавим новые обработчики после небольшой задержки
+        setTimeout(() => {
+            document.querySelectorAll('.card-link').forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+
+                    // Получаем название мастер-класса
+                    let workshopName = 'мастер-класс';
+                    const card = this.closest('.card');
+
+                    if (card && card.querySelector('h3')) {
+                        workshopName = card.querySelector('h3').textContent;
+                    }
+
+                    console.log('Opening modal for:', workshopName);
+
+                    // Открываем модальное окно
+                    if (typeof window.bookWorkshop === 'function') {
+                        window.bookWorkshop(workshopName);
+                    } else {
+                        // Fallback: прямое открытие
+                        const modal = document.getElementById('bookingModal');
+                        const modalTitle = document.getElementById('modalWorkshopTitle');
+
+                        if (modal && modalTitle) {
+                            modalTitle.textContent = workshopName;
+                            modal.style.display = 'block';
+                            document.body.style.overflow = 'hidden';
+                        }
+                    }
+                });
+
+                // Меняем href чтобы не скроллило наверх
+                button.href = 'javascript:void(0)';
+            });
+
+            console.log('Booking buttons initialized:', document.querySelectorAll('.card-link').length);
+        }, 100);
+    }
 
     // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ
+    function initFixedHeader() {
+        const header = document.querySelector('header');
+        if (!header) return;
 
-        // Плавное скрытие/показ при скролле
-        if (currentScroll > lastScroll && currentScroll > headerHeight) {
-            // Скроллим вниз - скрываем хедер
-            header.style.transform = 'translateY(-100%)';
-        } else {
-            // Скроллим вверх или вверху - показываем хедер
-            header.style.transform = 'translateY(0)';
-        }
+        const headerHeight = header.offsetHeight;
 
-        lastScroll = currentScroll;
-    });
+        // Устанавливаем начальный отступ для body
+        document.body.style.paddingTop = headerHeight + 'px';
 
-    // Обновляем отступ при изменении размера окна
-    window.addEventListener('resize', function() {
-        document.body.style.paddingTop = header.offsetHeight + 'px';
-    });
-}
+        // Просто добавляем тень при скролле (без скрытия хедера)
+        window.addEventListener('scroll', function() {
+            if (window.pageYOffset > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Обновляем отступ при изменении размера окна
+        window.addEventListener('resize', function() {
+            document.body.style.paddingTop = header.offsetHeight + 'px';
+        });
+    }
 
     // 10. ПРЕДЗАГРУЗКА ИЗОБРАЖЕНИЙ
     function initImagePreload() {
@@ -313,6 +329,8 @@ document.addEventListener('DOMContentLoaded', function() {
 // ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ИСПОЛЬЗОВАНИЯ В HTML
 if (typeof window.bookWorkshop === 'undefined') {
     window.bookWorkshop = function(workshopTitle) {
+        console.log('bookWorkshop called with:', workshopTitle);
+
         const modal = document.getElementById('bookingModal');
         const modalTitle = document.getElementById('modalWorkshopTitle');
 
@@ -320,8 +338,11 @@ if (typeof window.bookWorkshop === 'undefined') {
             modalTitle.textContent = workshopTitle || 'мастер-класс';
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
+            console.log('Modal opened successfully');
+            return true;
         } else {
-            console.error('Modal elements not found for bookWorkshop function');
+            console.error('Modal elements not found');
+            return false;
         }
     };
 }
@@ -332,16 +353,7 @@ if (typeof window.closeBookingModal === 'undefined') {
         if (modal) {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
-        }
-    };
-}
-// Функция закрытия модалки (можно вызывать из других скриптов)
-if (typeof window.closeBookingModal === 'undefined') {
-    window.closeBookingModal = function() {
-        const modal = document.getElementById('bookingModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            console.log('Modal closed');
         }
     };
 }
