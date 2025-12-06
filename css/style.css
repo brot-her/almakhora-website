@@ -131,74 +131,28 @@ h1, h2, h3, h4 {
     padding: 20px 0;
     box-shadow: 0 2px 15px var(--shadow);
     backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
 }
 
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.logo h1 {
-    font-size: 2.2rem;
-    margin: 0;
-}
-
-.logo h1 a {
-    text-decoration: none;
-    color: var(--umber);
-    letter-spacing: 1px;
-}
-
-.tagline {
+/* Добавьте этот стиль ДО остальных стилей body */
+body {
+    padding-top: 80px; /* ОТСТУП ДЛЯ ФИКСИРОВАННОГО ХЕДЕРА */
     font-family: var(--font-body);
-    font-size: 0.8rem;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    color: var(--terracotta);
-    margin: 0;
-    text-align: center;
-}
-
-.nav a {
-    text-decoration: none;
     color: var(--umber);
-    margin-left: 35px;
-    font-weight: 500;
-    font-size: 1.1rem;
-    position: relative;
-    padding: 5px 0;
-    transition: color 0.3s ease;
+    background-color: var(--canvas);
+    line-height: 1.6;
+    overflow-x: hidden;
 }
 
-.nav a::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--terracotta);
-    transition: width 0.3s ease;
-}
+/* Добавьте в медиа-запрос для мобильных */
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px; /* Меньшая высота на мобильных */
+    }
 
-.nav a:hover::after,
-.nav a.active::after {
-    width: 100%;
-}
-
-.nav a:hover,
-.nav a.active {
-    color: var(--terracotta);
-}
-
-.menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    color: var(--umber);
-    cursor: pointer;
+    .header {
+        padding: 15px 0;
+    }
 }
 
 /* ===== HERO ===== */
@@ -737,13 +691,6 @@ h1, h2, h3, h4 {
         transform: translateY(0);
     }
 }
-/* ФИКСИРОВАННЫЙ ХЕДЕР */
-header.scrolled {
-    background-color: rgba(249, 246, 240, 0.95);
-    box-shadow: 0 4px 20px rgba(93, 64, 55, 0.1);
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-}
 
 /* АНИМАЦИЯ ЗАГРУЗКИ ИЗОБРАЖЕНИЙ */
 img[data-src] {
@@ -766,38 +713,4 @@ img.loaded {
 @keyframes loading {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
-}
-/* ФИКСИРОВАННЫЙ ХЕДЕР */
-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
-    background-color: #F9F6F0;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 15px rgba(93, 64, 55, 0.1);
-}
-
-/* Добавляем отступ для body, чтобы контент не прятался под фиксированным хедером */
-body {
-    padding-top: 80px; /* Высота хедера */
-}
-
-/* Улучшаем хедер при скролле */
-header.scrolled {
-    background-color: rgba(249, 246, 240, 0.98);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 4px 20px rgba(93, 64, 55, 0.15);
-}
-
-/* Для мобильных устройств уменьшаем высоту */
-@media (max-width: 768px) {
-    body {
-        padding-top: 70px; /* Меньшая высота на мобильных */
-    }
-
-    header {
-        padding: 10px 0;
-    }
 }
