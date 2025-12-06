@@ -1,0 +1,8 @@
+{
+  "name": "almakhora-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "echo 'Static site - no dev server'",
+    "build": "echo 'Building static site' && mkdir -p public && cp -r *.html css js api public/ || echo 'Files copied'"
+  }
+}
