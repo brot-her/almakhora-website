@@ -3,80 +3,192 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alma Khora | Art-студия в Москве</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9f6f0;
-            color: #5D4037;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-        .header {
-            background: #C17C74;
-            color: white;
-            padding: 50px 20px;
-        }
-        h1 {
-            font-size: 3em;
-            margin: 0;
-        }
-        .tagline {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-        .content {
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 0 20px;
-        }
-        .btn {
-            display: inline-block;
-            background: #5D4037;
-            color: white;
-            padding: 15px 30px;
-            text-decoration: none;
-            border-radius: 30px;
-            margin: 20px 0;
-            font-weight: bold;
-        }
-        .contact {
-            background: #6D98BA;
-            color: white;
-            padding: 40px 20px;
-            margin-top: 50px;
-        }
-    </style>
+    <title>Alma Khora | Art-студия вдохновения</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="header">
-        <h1>Alma Khora</h1>
-        <p class="tagline">Art Studio</p>
-        <p>Творческое пространство в Москве</p>
-    </div>
-    
-    <div class="content">
-        <h2>О студии</h2>
-        <p>Alma Khora — место, где рождается искусство. Проводим мастер-классы по живописи, керамике и скетчингу.</p>
-        
-        <h2>Мастер-классы</h2>
-        <p>• Акварельная живопись</p>
-        <p>• Гончарное дело</p>
-        <p>• Скетчинг маркерами</p>
-        
-        <a href="#contact" class="btn">Записаться на занятие</a>
-    </div>
-    
-    <div class="contact" id="contact">
-        <h2>Контакты</h2>
-        <p>📍 Москва, ул. Творческая, 10</p>
-        <p>📞 +7 (999) 123-45-67</p>
-        <p>✉️ hello@almakhora.ru</p>
-    </div>
-    
-    <footer style="padding: 20px; background: #5D4037; color: white;">
-        <p>© 2024 Alma Khora Art Studio</p>
+    <!-- Шапка -->
+    <header class="header">
+        <div class="container header-container">
+            <div class="logo">
+                <h1><a href="#">Alma Khora</a></h1>
+                <p class="tagline">art studio</p>
+            </div>
+            <nav class="nav">
+                <a href="#home" class="active">Главная</a>
+                <a href="#about">О студии</a>
+                <a href="#workshops">Мастер-классы</a>
+                <a href="#gallery">Галерея</a>
+                <a href="#contact">Контакты</a>
+            </nav>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Герой-секция -->
+    <section class="hero" id="home">
+        <div class="container">
+            <h2 class="hero-title">Творчество — это язык души</h2>
+            <p class="hero-subtitle">Место, где рождаются идеи, а кисть встречается с холстом. Присоединяйтесь к нашему арт-сообществу.</p>
+            <div class="hero-buttons">
+                <a href="#workshops" class="btn btn-primary">Выбрать мастер-класс</a>
+                <a href="#gallery" class="btn btn-secondary">Вдохновиться галереей</a>
+            </div>
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- О студии -->
+    <section class="section about" id="about">
+        <div class="container">
+            <h2 class="section-title">О студии Alma Khora</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Alma Khora — это не просто студия, а убежище для творческих умов и ищущих вдохновение сердец. Наше название, означающее «душа места», отражает саму суть нашего пространства.</p>
+                    <p>Мы верим, что искусство доступно каждому, и наша миссия — помочь вам раскрыть внутреннего художника через живопись, графику и керамику.</p>
+                    <ul class="features">
+                        <li><i class="fas fa-palette accent-icon"></i> Работа с профессиональными материалами</li>
+                        <li><i class="fas fa-users accent-icon"></i> Уютные группы до 8 человек</li>
+                        <li><i class="fas fa-award accent-icon"></i> Под руководством опытных художников</li>
+                        <li><i class="fas fa-wine-glass-alt accent-icon"></i> Вечера с арт-медитацией и вином</li>
+                    </ul>
+                </div>
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <i class="fas fa-palette"></i>
+                        <p>Фото нашей уютной студии</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Мастер-классы -->
+    <section class="section workshops" id="workshops">
+        <div class="container">
+            <h2 class="section-title">Популярные мастер-классы</h2>
+            <p class="section-subtitle">Откройте для себя новые техники и материалы</p>
+            <div class="workshop-cards">
+                <div class="card">
+                    <div class="card-icon" style="background-color: #6D98BA;">
+                        <i class="fas fa-brush"></i>
+                    </div>
+                    <h3>Акварельная живопись</h3>
+                    <p class="price">3 часа · 2500 ₽</p>
+                    <p>Освойте легкость и текучесть акварели. Уроки для начинающих и продвинутых.</p>
+                    <a href="#" class="card-link">Записаться <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background-color: #C17C74;">
+                        <i class="fas fa-hands"></i>
+                    </div>
+                    <h3>Гончарное дело</h3>
+                    <p class="price">4 часа · 3500 ₽</p>
+                    <p>Создайте свою уникальную керамику на гончарном круге под руководством мастера.</p>
+                    <a href="#" class="card-link">Записаться <i class="fas fa-arrow-right"></i></a>
+                </div>
+                <div class="card">
+                    <div class="card-icon" style="background-color: #5D4037;">
+                        <i class="fas fa-pencil-alt"></i>
+                    </div>
+                    <h3>Скетчинг и графика</h3>
+                    <p class="price">2.5 часа · 2000 ₽</p>
+                    <p>Основы композиции, работа с линией и штрихом. Идеально для дизайнеров и иллюстраторов.</p>
+                    <a href="#" class="card-link">Записаться <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Галерея -->
+    <section class="section gallery" id="gallery">
+        <div class="container">
+            <h2 class="section-title">Галерея работ</h2>
+            <p class="section-subtitle">Творчество наших учеников и художников-резидентов</p>
+            <div class="gallery-grid">
+                <div class="gallery-item"><div class="img-placeholder">Работа 1</div></div>
+                <div class="gallery-item"><div class="img-placeholder">Работа 2</div></div>
+                <div class="gallery-item"><div class="img-placeholder">Работа 3</div></div>
+                <div class="gallery-item"><div class="img-placeholder">Работа 4</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Контакты -->
+    <section class="section contact" id="contact">
+        <div class="container">
+            <h2 class="section-title">Контакты</h2>
+            <div class="contact-info">
+                <div class="contact-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <div>
+                        <h3>Адрес</h3>
+                        <p>Москва, ул. Творческая, 10</p>
+                        <p>м. Кропоткинская, 5 минут пешком</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-clock"></i>
+                    <div>
+                        <h3>Часы работы</h3>
+                        <p>Пн-Пт: 10:00-22:00</p>
+                        <p>Сб-Вс: 11:00-20:00</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <i class="fas fa-phone"></i>
+                    <div>
+                        <h3>Телефон</h3>
+                        <p>+7 (999) 123-45-67</p>
+                        <p>hello@almakhora.ru</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <h3>Alma Khora</h3>
+                    <p>Art-студия в самом сердце Москвы. Место, где искусство становится частью жизни.</p>
+                    <div class="social">
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-vk"></i></a>
+                        <a href="#"><i class="fab fa-telegram"></i></a>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <h4>Навигация</h4>
+                    <a href="#home">Главная</a>
+                    <a href="#about">О студии</a>
+                    <a href="#workshops">Мастер-классы</a>
+                    <a href="#gallery">Галерея</a>
+                    <a href="#contact">Контакты</a>
+                </div>
+                <div class="footer-newsletter">
+                    <h4>Новости студии</h4>
+                    <p>Подпишитесь на новости о новых мастер-классах и акциях.</p>
+                    <form class="subscribe-form">
+                        <input type="email" placeholder="Ваш e-mail" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="currentYear"></span> Alma Khora Art Studio. Все права защищены.</p>
+            </div>
+        </div>
     </footer>
+
+    <script src="js/main.js"></script>
 </body>
 </html>

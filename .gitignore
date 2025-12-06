@@ -1,0 +1,24 @@
+# Системные файлы Windows
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Папки Windows
+AppData/
+Local Settings/
+$RECYCLE.BIN/
+
+# Логи
+*.log
+npm-debug.log*
+
+# Редакторы кода
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Временные файлы
+*.tmp
+*.temp
+*~
