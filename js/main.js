@@ -214,35 +214,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 8. КНОПКИ ЗАПИСИ НА МАСТЕР-КЛАССЫ
     function initBookingButtons() {
-        const bookingButtons = document.querySelectorAll('.card-link, .btn-book, [data-workshop]');
+    const bookingButtons = document.querySelectorAll('.card-link, .btn-book, [data-workshop]');
 
-        bookingButtons.forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
+    bookingButtons.forEach(button => {
+        // Уберите старый обработчик если есть
+        button.removeEventListener('click', handleBookingClick);
 
-                // Получаем название мастер-класса
-                let workshopName = '';
+        // Добавьте новый
+        button.addEventListener('click', function(e) {
+            e.preventDefault(); // Это важно!
 
-                // Попробуем разные способы получить название
-                if (this.dataset.workshop) {
-                    workshopName = this.dataset.workshop;
-                } else if (this.closest('.card') && this.closest('.card').querySelector('h3')) {
-                    workshopName = this.closest('.card').querySelector('h3').textContent;
-                } else if (this.closest('.workshop-card') && this.closest('.workshop-card').querySelector('h3')) {
-                    workshopName = this.closest('.workshop-card').querySelector('h3').textContent;
-                } else {
-                    workshopName = 'мастер-класс';
-                }
+            // Получаем название мастер-класса
+            let workshopName = '';
 
-                // Открываем модальное окно
-                if (typeof window.bookWorkshop === 'function') {
-                    window.bookWorkshop(workshopName);
-                } else {
-                    console.error('bookWorkshop function not found');
-                }
-            });
+            if (this.dataset.workshop) {
+                workshopName = this.dataset.workshop;
+            } else if (this.closest('.card') && this.closest('.card').querySelector('h3')) {
+                workshopName = this.closest('.card').querySelector('h3').textContent;
+            } else {
+                workshopName = 'мастер-класс';
+            }
+
+            // Открываем модальное окно
+            if (typeof window.bookWorkshop === 'function') {
+                window.bookWorkshop(workshopName);
+            }
         });
-    }
+    });
+}
 
     // 9. ФИКСИРОВАННЫЙ ХЕДЕР ПРИ СКРОЛЛЕ
 
@@ -312,7 +311,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ГЛОБАЛЬНЫЕ ФУНКЦИИ ДЛЯ ИСПОЛЬЗОВАНИЯ В HTML
-// Можно вызывать из HTML: onclick="bookWorkshop('Название мастер-класса')"
 if (typeof window.bookWorkshop === 'undefined') {
     window.bookWorkshop = function(workshopTitle) {
         const modal = document.getElementById('bookingModal');
@@ -328,6 +326,15 @@ if (typeof window.bookWorkshop === 'undefined') {
     };
 }
 
+if (typeof window.closeBookingModal === 'undefined') {
+    window.closeBookingModal = function() {
+        const modal = document.getElementById('bookingModal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+    };
+}
 // Функция закрытия модалки (можно вызывать из других скриптов)
 if (typeof window.closeBookingModal === 'undefined') {
     window.closeBookingModal = function() {
