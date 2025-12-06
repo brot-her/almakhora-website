@@ -2,7 +2,9 @@
   "name": "almakhora-website",
   "version": "1.0.0",
   "scripts": {
-    "dev": "echo 'Static site - no dev server'",
-    "build": "echo 'Building static site' && mkdir -p public && cp -r *.html css js api public/ || echo 'Files copied'"
+    "dev": "echo \"Static site - no dev server\"",
+    "build": "echo \"Building static site...\" && rm -rf public && mkdir -p public && cp *.html public/ && cp -r css js public/ && echo \"✓ HTML, CSS, JS copied\"",
+    "postbuild": "./postbuild.sh",
+    "netlify-build": "npm run build && npm run postbuild"
   }
 }

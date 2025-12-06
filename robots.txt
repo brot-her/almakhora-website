@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
 Disallow: /admin/
-Disallow: /private/
 
 User-agent: Yandex
 Allow: /
@@ -9,7 +8,6 @@ Crawl-delay: 1
 
 User-agent: Googlebot
 Allow: /
-Crawl-delay: 0.5
 
 Sitemap: https://almakhora.ru/sitemap.xml
 Host: https://almakhora.ru

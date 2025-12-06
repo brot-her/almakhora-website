@@ -1,32 +1,31 @@
 [build]
-  publish = "."
-  command = "echo 'No build needed for static site'"
+publish = "public"
+command = "npm run netlify-build"
 
 [[redirects]]
-  from = "https://www.almakhora.ru/*"
-  to = "https://almakhora.ru/:splat"
-  status = 301
-  force = true
+from = "https://www.almakhora.ru/*"
+to = "https://almakhora.ru/:splat"
+status = 301
+force = true
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+from = "/*"
+to = "/index.html"
+status = 200
 
 [[headers]]
-  for = "/*"
-  [headers.values]
-    X-Frame-Options = "DENY"
-    X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Для SEO
-[[headers]]
-  for = "/robots.txt"
-  [headers.values]
-    Content-Type = "text/plain"
+for = "/*"
+[headers.values]
+  X-Frame-Options = "DENY"
+  X-Content-Type-Options = "nosniff"
+  Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[headers]]
-  for = "/sitemap.xml"
-  [headers.values]
-    Content-Type = "application/xml"
+for = "/robots.txt"
+[headers.values]
+  Content-Type = "text/plain; charset=utf-8"
+
+[[headers]]
+for = "/sitemap.xml"
+[headers.values]
+  Content-Type = "application/xml; charset=utf-8"
