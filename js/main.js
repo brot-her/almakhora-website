@@ -1,164 +1,120 @@
 // ============================================
-// Alma Khora - ОКОНЧАТЕЛЬНО ИСПРАВЛЕННЫЙ main.js
+// Alma Khora - МИНИМАЛЬНЫЙ И НАДЕЖНЫЙ JS
 // ============================================
 
-console.log('🚀 Alma Khora - Header protection guaranteed');
+console.log('🚀 Alma Khora - Minimal JS loaded');
 
-// ГЛОБАЛЬНАЯ ЗАЩИТА ХЕДЕРА (запускается СРАЗУ)
-(function() {
-    'use strict';
+// 1. ФУНКЦИЯ АБСОЛЮТНОЙ ФИКСАЦИИ ХЕДЕРА
+function lockHeaderForever() {
+    console.log('🔒 Locking header permanently...');
 
-    console.log('🛡️  Global header protection activating...');
+    const header = document.querySelector('header.header');
+    if (!header) {
+        console.warn('Header not found!');
+        return;
+    }
 
-    // 1. Функция для жесткой фиксации хедера
-    function lockHeaderInPlace() {
-        const header = document.querySelector('header');
-        if (!header) {
-            console.log('Header not found yet, will retry...');
-            return false;
-        }
+    // ЖЕСТКОЕ ПЕРЕОПРЕДЕЛЕНИЕ СТИЛЕЙ
+    header.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 1000 !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        box-shadow: 0 2px 15px rgba(93, 64, 55, 0.1) !important;
+        background-color: rgba(249, 246, 240, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
+    `;
 
-        // АБСОЛЮТНАЯ ФИКСАЦИЯ
-        header.style.position = 'fixed';
+    // ОТКЛЮЧАЕМ ВСЕ ВОЗМОЖНЫЕ ИЗМЕНЕНИЯ
+    Object.defineProperty(header.style, 'transform', {
+        get() { return 'none'; },
+        set(value) {
+            console.warn('Blocked transform change:', value);
+            return 'none';
+        },
+        configurable: false
+    });
+
+    Object.defineProperty(header.style, 'top', {
+        get() { return '0px'; },
+        set(value) {
+            console.warn('Blocked top change:', value);
+            return '0px';
+        },
+        configurable: false
+    });
+
+    // УСТАНАВЛИВАЕМ ОТСТУП ДЛЯ BODY
+    const headerHeight = header.offsetHeight;
+    document.body.style.cssText = `
+        padding-top: ${headerHeight}px !important;
+        overflow-x: hidden !important;
+    `;
+
+    console.log(`✅ Header locked at ${headerHeight}px`);
+
+    // УБИВАЕМ ВСЕ ОБРАБОТЧИКИ СКРОЛЛА
+    window.onscroll = null;
+    const originalScroll = window.scroll;
+    window.scroll = function() {
+        // Гарантируем что хедер на месте
+        header.style.transform = 'none';
+        return originalScroll.apply(this, arguments);
+    };
+
+    // ДОБАВЛЯЕМ НЕУБИВАЕМЫЙ ОБРАБОТЧИК
+    window.addEventListener('scroll', function() {
+        header.style.transform = 'none';
         header.style.top = '0';
-        header.style.left = '0';
-        header.style.width = '100%';
-        header.style.zIndex = '1000';
-        header.style.transform = 'translateY(0)';
-        header.style.transition = 'none';
+    }, { capture: true, passive: true });
+}
 
-        // ОТКЛЮЧАЕМ ВСЕ АНИМАЦИИ
-        header.style.animation = 'none';
+// 2. ЗАПУСКАЕМ ЗАЩИТУ СРАЗУ
+(function initHeaderProtection() {
+    console.log('🛡️ Starting ultimate header protection');
 
-        // Устанавливаем отступ для body
-        const height = header.offsetHeight;
-        document.body.style.paddingTop = height + 'px';
-
-        console.log(`✅ Header locked at ${height}px height`);
-        return true;
-    }
-
-    // 2. Защита от любых попыток изменить хедер
-    function protectHeaderFromChanges() {
-        const header = document.querySelector('header');
-        if (!header) return;
-
-        // Блокируем изменение стилей
-        const originalStyleSet = header.style.setProperty;
-        header.style.setProperty = function(name, value, priority) {
-            if (name.includes('transform') || name.includes('top') || name.includes('margin')) {
-                if (value && value.toString().includes('-')) {
-                    console.warn(`🚫 Blocked attempt to set ${name} to ${value}`);
-                    return;
-                }
+    // Пытаемся сразу
+    if (document.querySelector('header')) {
+        lockHeaderForever();
+    } else {
+        // Ждем появления хедера
+        const observer = new MutationObserver(function(mutations) {
+            if (document.querySelector('header')) {
+                observer.disconnect();
+                lockHeaderForever();
             }
-            return originalStyleSet.call(this, name, value, priority);
-        };
+        });
 
-        // Блокируем добавление классов, которые могут скрыть
-        const originalAddClass = header.classList.add;
-        header.classList.add = function() {
-            const classes = Array.from(arguments);
-            const dangerous = ['hide', 'hidden', 'scroll-hide', 'header-hide'];
-            const filtered = classes.filter(cls => !dangerous.includes(cls));
-
-            if (filtered.length !== classes.length) {
-                console.warn('🚫 Blocked dangerous class addition');
-            }
-
-            return originalAddClass.apply(this, filtered);
-        };
-    }
-
-    // 3. ПОСТОЯННЫЙ МОНИТОРИНГ
-    function startHeaderMonitoring() {
-        setInterval(() => {
-            const header = document.querySelector('header');
-            if (!header) return;
-
-            // Проверяем ключевые свойства
-            const computed = getComputedStyle(header);
-            const checks = [
-                { prop: 'position', expected: 'fixed', actual: computed.position },
-                { prop: 'top', expected: '0px', actual: computed.top },
-                { prop: 'transform', check: (val) => !val.includes('translateY(-'), actual: computed.transform }
-            ];
-
-            let needsFix = false;
-            checks.forEach(check => {
-                if (check.expected && check.actual !== check.expected) {
-                    console.warn(`Header ${check.prop} is ${check.actual}, should be ${check.expected}`);
-                    needsFix = true;
-                }
-                if (check.check && !check.check(check.actual)) {
-                    console.warn(`Header ${check.prop} failed check: ${check.actual}`);
-                    needsFix = true;
-                }
-            });
-
-            if (needsFix) {
-                console.log('🛠️  Fixing header...');
-                lockHeaderInPlace();
-            }
-        }, 500); // Проверяем каждые 500ms
-    }
-
-    // 4. ЗАПУСК ЗАЩИТЫ
-    function initializeProtection() {
-        console.log('Initializing header protection...');
-
-        // Пытаемся сразу
-        if (lockHeaderInPlace()) {
-            protectHeaderFromChanges();
-            startHeaderMonitoring();
-        } else {
-            // Если хедер еще не загружен, ждем
-            const checkInterval = setInterval(() => {
-                if (lockHeaderInPlace()) {
-                    clearInterval(checkInterval);
-                    protectHeaderFromChanges();
-                    startHeaderMonitoring();
-                }
-            }, 100);
-        }
-
-        // Также при полной загрузке страницы
-        window.addEventListener('load', () => {
-            console.log('Page loaded, reinforcing protection...');
-            lockHeaderInPlace();
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
         });
     }
 
-    // Запускаем немедленно
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeProtection);
-    } else {
-        initializeProtection();
-    }
-
-    // Дублирующая защита через 1 секунду
-    setTimeout(initializeProtection, 1000);
-
-    console.log('🛡️  Global header protection activated');
+    // Дублируем через 100мс, 500мс и 1000мс
+    setTimeout(lockHeaderForever, 100);
+    setTimeout(lockHeaderForever, 500);
+    setTimeout(lockHeaderForever, 1000);
 })();
 
-// ОСНОВНОЙ КОД САЙТА
+// 3. ОСНОВНОЙ КОД (после защиты хедера)
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🏁 Main site code starting...');
+    console.log('🏁 DOM loaded, starting main features');
 
-    // 1. ОСНОВНЫЕ ПЕРЕМЕННЫЕ
-    const menuToggle = document.querySelector('.menu-toggle');
-    const nav = document.querySelector('.nav');
+    // A. ТЕКУЩИЙ ГОД
     const yearSpan = document.getElementById('currentYear');
-    const modal = document.getElementById('bookingModal');
-    const modalTitle = document.getElementById('modalWorkshopTitle');
-
-    // 2. ТЕКУЩИЙ ГОД
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
     }
 
-    // 3. МОБИЛЬНОЕ МЕНЮ (упрощенное)
+    // B. МОБИЛЬНОЕ МЕНЮ
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.nav');
+
     if (menuToggle && nav) {
         menuToggle.addEventListener('click', function() {
             const isActive = nav.classList.toggle('active');
@@ -173,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Закрытие по клику на ссылку
+        // Закрытие меню
         document.querySelectorAll('.nav a').forEach(link => {
             link.addEventListener('click', () => {
                 nav.classList.remove('active');
@@ -183,43 +139,16 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // 4. ПЛАВНАЯ ПРОКРУТКА
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
-            const targetId = this.getAttribute('href');
-            if (targetId === '#' || !targetId.startsWith('#')) return;
+    // C. МОДАЛЬНОЕ ОКНО
+    const modal = document.getElementById('bookingModal');
+    const modalTitle = document.getElementById('modalWorkshopTitle');
 
-            const target = document.querySelector(targetId);
-            if (target) {
-                e.preventDefault();
-
-                // Закрываем меню если открыто
-                if (nav && nav.classList.contains('active')) {
-                    nav.classList.remove('active');
-                    menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
-                    document.body.style.overflow = 'auto';
-                }
-
-                // Скроллим с учетом хедера
-                const header = document.querySelector('header');
-                const headerHeight = header ? header.offsetHeight : 80;
-
-                window.scrollTo({
-                    top: target.offsetTop - headerHeight,
-                    behavior: 'smooth'
-                });
-            }
-        });
-    });
-
-    // 5. МОДАЛЬНОЕ ОКНО
     if (modal && modalTitle) {
         // Глобальные функции
         window.bookWorkshop = function(title) {
             modalTitle.textContent = title || 'мастер-класс';
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden';
-            return true;
         };
 
         window.closeBookingModal = function() {
@@ -227,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = 'auto';
         };
 
-        // Обработчики закрытия
+        // Обработчики
         document.querySelectorAll('.close-modal, .modal-close-btn').forEach(btn => {
             btn.addEventListener('click', window.closeBookingModal);
         });
@@ -242,82 +171,83 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Кнопки "Записаться"
+        // Кнопки записи
         document.querySelectorAll('.card-link').forEach(button => {
             button.addEventListener('click', function(e) {
                 e.preventDefault();
 
-                let workshopName = 'мастер-класс';
                 const card = this.closest('.card');
-                if (card && card.querySelector('h3')) {
-                    workshopName = card.querySelector('h3').textContent;
-                }
+                const title = card && card.querySelector('h3')
+                    ? card.querySelector('h3').textContent
+                    : 'мастер-класс';
 
-                window.bookWorkshop(workshopName);
+                window.bookWorkshop(title);
             });
 
             button.href = 'javascript:void(0)';
         });
     }
 
-    // 6. ПОДСВЕТКА АКТИВНОГО ПУНКТА МЕНЮ (опционально)
-    const sections = document.querySelectorAll('section[id]');
-    const navLinks = document.querySelectorAll('.nav a[href^="#"]');
+    // D. ПЛАВНАЯ ПРОКРУТКА
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (!targetId || targetId === '#' || !targetId.startsWith('#')) return;
 
-    if (sections.length > 0 && navLinks.length > 0) {
-        function highlightMenu() {
-            let current = '';
-            const scrollPos = window.scrollY + 100;
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
 
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                const sectionId = section.getAttribute('id');
-
-                if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
-                    current = sectionId;
+                // Закрываем меню
+                if (nav && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    document.body.style.overflow = 'auto';
                 }
-            });
 
-            navLinks.forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === `#${current}`) {
-                    link.classList.add('active');
-                }
-            });
-        }
+                // Расчет позиции
+                const header = document.querySelector('header');
+                const headerHeight = header ? header.offsetHeight : 80;
+                const targetPosition = target.offsetTop - headerHeight;
 
-        window.addEventListener('scroll', highlightMenu);
-        highlightMenu();
-    }
-
-    // 7. АНИМАЦИЯ ПОЯВЛЕНИЯ ЭЛЕМЕНТОВ (БЕЗ ВЛИЯНИЯ НА ХЕДЕР)
-    const animatedElements = document.querySelectorAll('.card, .gallery-item');
-    if (animatedElements.length > 0) {
-        animatedElements.forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
         });
+    });
 
-        function checkAnimation() {
-            animatedElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight * 0.9) {
-                    el.style.opacity = '1';
-                    el.style.transform = 'translateY(0)';
-                }
-            });
-        }
-
-        window.addEventListener('scroll', checkAnimation);
-        checkAnimation();
-    }
-
-    console.log('✅ Main site code loaded successfully');
+    console.log('✅ All features loaded');
 });
 
-// УБИРАЕМ ПАРАЛЛАКС И ЛЮБЫЕ ДРУГИЕ ЭФФЕКТЫ, КОТОРЫЕ МОГУТ ВЛИЯТЬ НА ХЕДЕР
-// Параллакс отключен намеренно - он конфликтует с фиксированным хедером
+// 4. ФИНАЛЬНАЯ ПРОВЕРКА
+window.addEventListener('load', function() {
+    console.log('📋 Final header verification');
 
-console.log('🎉 Alma Khora JS loaded with guaranteed header visibility');
+    const header = document.querySelector('header');
+    if (header) {
+        const style = getComputedStyle(header);
+        console.log('Header final status:', {
+            position: style.position,
+            top: style.top,
+            transform: style.transform,
+            visibility: style.visibility
+        });
+
+        // Последний шанс исправить
+        if (style.position !== 'fixed' || style.top !== '0px') {
+            console.warn('⚠️ Header not properly fixed! Applying emergency fix...');
+            header.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                z-index: 1000 !important;
+                transform: none !important;
+            `;
+        }
+    }
+
+    console.log('🎉 Alma Khora - Ready with guaranteed header visibility');
+});
