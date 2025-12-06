@@ -743,4 +743,81 @@ img.loaded {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }/* Last update: Sat Dec  6 18:28:10 RTZ 2025 */
- 
+
+/* ФОРСИРОВАННОЕ ИСПРАВЛЕНИЕ ХЕДЕРА */
+header {
+    transform: translateY(0) !important;
+    transform: none !important;
+    transition: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+}
+
+body {
+    padding-top: 80px !important;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px !important;
+    }
+}
+/* ЗАЩИТА ФИКСИРОВАННОГО ХЕДЕРА */
+.fixed-header {
+    transform: translateY(0) !important;
+    transition: transform 0.3s ease !important;
+}
+
+/* Отключаем любые попытки скрыть хедер */
+header.hide-on-scroll,
+header[style*="transform: translateY(-"],
+header[style*="transform:translateY(-"] {
+    transform: translateY(0) !important;
+}
+
+/* Гарантируем отступ для body */
+body.has-fixed-header {
+    padding-top: var(--header-height, 80px) !important;
+}
+
+@media (max-width: 768px) {
+    body.has-fixed-header {
+        padding-top: var(--header-height-mobile, 70px) !important;
+    }
+}
+
+/* АБСОЛЮТНАЯ ЗАЩИТА ХЕДЕРА В CSS */
+header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    transform: translateY(0) !important;
+    transition: none !important;
+    animation: none !important;
+    will-change: transform !important;
+}
+
+/* Отключаем ВСЕ возможные анимации скрытия */
+header.hide,
+header.hidden,
+header[class*="scroll-hide"],
+header[style*="transform:translateY(-"] {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Гарантируем отступ для контента */
+body {
+    padding-top: 80px !important;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding-top: 70px !important;
+    }
+}
