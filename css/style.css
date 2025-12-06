@@ -623,3 +623,147 @@ h1, h2, h3, h4 {
         grid-template-columns: 1fr;
     }
 }
+/* Модальное окно */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #F9F6F0;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    position: relative;
+    text-align: center;
+    border: 2px solid #D4AF37;
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #5D4037;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-modal:hover {
+    color: #C17C74;
+}
+
+.modal-icon {
+    font-size: 60px;
+    color: #D4AF37;
+    margin-bottom: 20px;
+}
+
+.modal h3 {
+    color: #5D4037;
+    margin-bottom: 15px;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8em;
+}
+
+.modal-phone {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    display: inline-block;
+    border: 1px solid #e0d6c2;
+}
+
+.modal-phone i {
+    color: #C17C74;
+    margin-right: 10px;
+}
+
+.modal-phone a {
+    color: #5D4037;
+    text-decoration: none;
+    font-size: 1.3em;
+    font-weight: 600;
+}
+
+.modal-phone a:hover {
+    color: #C17C74;
+}
+
+.modal-subtext {
+    color: #8a6d5d;
+    font-size: 0.9em;
+    margin: 15px 0 25px;
+    font-style: italic;
+}
+
+.modal-close-btn {
+    background-color: #C17C74;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.modal-close-btn:hover {
+    background-color: #b06a62;
+}
+.modal-content {
+    animation: modalFade 0.3s;
+}
+
+@keyframes modalFade {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+/* ФИКСИРОВАННЫЙ ХЕДЕР */
+header.scrolled {
+    background-color: rgba(249, 246, 240, 0.95);
+    box-shadow: 0 4px 20px rgba(93, 64, 55, 0.1);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+/* АНИМАЦИЯ ЗАГРУЗКИ ИЗОБРАЖЕНИЙ */
+img[data-src] {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+img.loaded {
+    opacity: 1;
+}
+
+/* ЛЕНИВАЯ ЗАГРУЗКА */
+.lazy-load {
+    min-height: 200px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
