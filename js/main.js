@@ -1,65 +1,253 @@
-// Обработка записи на мастер-классы
-document.addEventListener('DOMContentLoaded', function() {
-  const signupButtons = document.querySelectorAll('.btn-signup');
+// ============================================
+// Alma Khora - МИНИМАЛЬНЫЙ И НАДЕЖНЫЙ JS
+// ============================================
 
-  signupButtons.forEach(button => {
-    button.addEventListener('click', function() {
-      const masterclassName = this.getAttribute('data-masterclass');
-      openSignupModal(masterclassName);
-    });
-  });
+console.log('🚀 Alma Khora - Minimal JS loaded');
 
-  function openSignupModal(masterclassName) {
-    // Создаем модальное окно
-    const modalHTML = `
-      <div class="modal-overlay" id="signupModal">
-        <div class="modal-content">
-          <button class="modal-close">&times;</button>
-          <h3>Запись на мастер-класс</h3>
-          <p class="modal-subtitle">${masterclassName}</p>
-          <form id="signupForm">
-            <div class="form-group">
-              <input type="text" placeholder="Ваше имя" required>
-            </div>
-            <div class="form-group">
-              <input type="tel" placeholder="Телефон" required>
-            </div>
-            <div class="form-group">
-              <input type="email" placeholder="Email" required>
-            </div>
-            <div class="form-group">
-              <textarea placeholder="Комментарий (необязательно)" rows="3"></textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Отправить заявку</button>
-          </form>
-        </div>
-      </div>
+// 1. ФУНКЦИЯ АБСОЛЮТНОЙ ФИКСАЦИИ ХЕДЕРА
+function lockHeaderForever() {
+    console.log('🔒 Locking header permanently...');
+
+    const header = document.querySelector('header.header');
+    if (!header) {
+        console.warn('Header not found!');
+        return;
+    }
+
+    // ЖЕСТКОЕ ПЕРЕОПРЕДЕЛЕНИЕ СТИЛЕЙ
+    header.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        z-index: 1000 !important;
+        transform: none !important;
+        transition: none !important;
+        animation: none !important;
+        box-shadow: 0 2px 15px rgba(93, 64, 55, 0.1) !important;
+        background-color: rgba(249, 246, 240, 0.95) !important;
+        backdrop-filter: blur(10px) !important;
     `;
 
-    // Добавляем модальное окно в body
-    document.body.insertAdjacentHTML('beforeend', modalHTML);
-
-    // Закрытие модального окна
-    const modal = document.getElementById('signupModal');
-    const closeBtn = modal.querySelector('.modal-close');
-
-    closeBtn.addEventListener('click', () => {
-      modal.remove();
+    // ОТКЛЮЧАЕМ ВСЕ ВОЗМОЖНЫЕ ИЗМЕНЕНИЯ
+    Object.defineProperty(header.style, 'transform', {
+        get() { return 'none'; },
+        set(value) {
+            console.warn('Blocked transform change:', value);
+            return 'none';
+        },
+        configurable: false
     });
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) {
-        modal.remove();
-      }
+    Object.defineProperty(header.style, 'top', {
+        get() { return '0px'; },
+        set(value) {
+            console.warn('Blocked top change:', value);
+            return '0px';
+        },
+        configurable: false
     });
 
-    // Обработка формы
-    const form = document.getElementById('signupForm');
-    form.addEventListener('submit', function(e) {
-      e.preventDefault();
-      // Здесь код отправки формы
-      alert(`Заявка на мастер-класс "${masterclassName}" отправлена! Мы свяжемся с вами в течение дня.`);
-      modal.remove();
+    // УСТАНАВЛИВАЕМ ОТСТУП ДЛЯ BODY
+    const headerHeight = header.offsetHeight;
+    document.body.style.cssText = `
+        padding-top: ${headerHeight}px !important;
+        overflow-x: hidden !important;
+    `;
+
+    console.log(`✅ Header locked at ${headerHeight}px`);
+
+    // УБИВАЕМ ВСЕ ОБРАБОТЧИКИ СКРОЛЛА
+    window.onscroll = null;
+    const originalScroll = window.scroll;
+    window.scroll = function() {
+        // Гарантируем что хедер на месте
+        header.style.transform = 'none';
+        return originalScroll.apply(this, arguments);
+    };
+
+    // ДОБАВЛЯЕМ НЕУБИВАЕМЫЙ ОБРАБОТЧИК
+    window.addEventListener('scroll', function() {
+        header.style.transform = 'none';
+        header.style.top = '0';
+    }, { capture: true, passive: true });
+}
+
+// 2. ЗАПУСКАЕМ ЗАЩИТУ СРАЗУ
+(function initHeaderProtection() {
+    console.log('🛡️ Starting ultimate header protection');
+
+    // Пытаемся сразу
+    if (document.querySelector('header')) {
+        lockHeaderForever();
+    } else {
+        // Ждем появления хедера
+        const observer = new MutationObserver(function(mutations) {
+            if (document.querySelector('header')) {
+                observer.disconnect();
+                lockHeaderForever();
+            }
+        });
+
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+
+    // Дублируем через 100мс, 500мс и 1000мс
+    setTimeout(lockHeaderForever, 100);
+    setTimeout(lockHeaderForever, 500);
+    setTimeout(lockHeaderForever, 1000);
+})();
+
+// 3. ОСНОВНОЙ КОД (после защиты хедера)
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🏁 DOM loaded, starting main features');
+
+    // A. ТЕКУЩИЙ ГОД
+    const yearSpan = document.getElementById('currentYear');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
+
+    // B. МОБИЛЬНОЕ МЕНЮ
+    const menuToggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.nav');
+
+    if (menuToggle && nav) {
+        menuToggle.addEventListener('click', function() {
+            const isActive = nav.classList.toggle('active');
+            const icon = this.querySelector('i');
+
+            if (isActive) {
+                icon.classList.replace('fa-bars', 'fa-times');
+                document.body.style.overflow = 'hidden';
+            } else {
+                icon.classList.replace('fa-times', 'fa-bars');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Закрытие меню
+        document.querySelectorAll('.nav a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('active');
+                menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                document.body.style.overflow = 'auto';
+            });
+        });
+    }
+
+    // C. МОДАЛЬНОЕ ОКНО
+    const modal = document.getElementById('bookingModal');
+    const modalTitle = document.getElementById('modalWorkshopTitle');
+
+    if (modal && modalTitle) {
+        // Глобальные функции
+        window.bookWorkshop = function(title) {
+            modalTitle.textContent = title || 'мастер-класс';
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.closeBookingModal = function() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        };
+
+        // Обработчики
+        document.querySelectorAll('.close-modal, .modal-close-btn').forEach(btn => {
+            btn.addEventListener('click', window.closeBookingModal);
+        });
+
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) window.closeBookingModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                window.closeBookingModal();
+            }
+        });
+
+        // Кнопки записи
+        document.querySelectorAll('.card-link').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const card = this.closest('.card');
+                const title = card && card.querySelector('h3')
+                    ? card.querySelector('h3').textContent
+                    : 'мастер-класс';
+
+                window.bookWorkshop(title);
+            });
+
+            button.href = 'javascript:void(0)';
+        });
+    }
+
+    // D. ПЛАВНАЯ ПРОКРУТКА
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            const targetId = this.getAttribute('href');
+            if (!targetId || targetId === '#' || !targetId.startsWith('#')) return;
+
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+
+                // Закрываем меню
+                if (nav && nav.classList.contains('active')) {
+                    nav.classList.remove('active');
+                    menuToggle.querySelector('i').classList.replace('fa-times', 'fa-bars');
+                    document.body.style.overflow = 'auto';
+                }
+
+                // Расчет позиции
+                const header = document.querySelector('header');
+                const headerHeight = header ? header.offsetHeight : 80;
+                const targetPosition = target.offsetTop - headerHeight;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        });
     });
-  }
+
+    console.log('✅ All features loaded');
+});
+
+// 4. ФИНАЛЬНАЯ ПРОВЕРКА
+window.addEventListener('load', function() {
+    console.log('📋 Final header verification');
+
+    const header = document.querySelector('header');
+    if (header) {
+        const style = getComputedStyle(header);
+        console.log('Header final status:', {
+            position: style.position,
+            top: style.top,
+            transform: style.transform,
+            visibility: style.visibility
+        });
+
+        // Последний шанс исправить
+        if (style.position !== 'fixed' || style.top !== '0px') {
+            console.warn('⚠️ Header not properly fixed! Applying emergency fix...');
+            header.style.cssText = `
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100% !important;
+                z-index: 1000 !important;
+                transform: none !important;
+            `;
+        }
+    }
+
+    console.log('🎉 Alma Khora - Ready with guaranteed header visibility');
 });
