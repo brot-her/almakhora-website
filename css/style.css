@@ -452,3 +452,61 @@ h1, h2, h3, h4 { font-family: var(--font-heading); font-weight: 600; line-height
     .contact-info { grid-template-columns: 1fr; }
     .info-items div { flex: 1 0 100%; }
 }
+
+/* ===== GALLERY FIX ===== */
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 50px;
+}
+
+.gallery-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.gallery-img {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.gallery-item:hover .gallery-img {
+    transform: scale(1.05);
+    box-shadow: 0 15px 35px rgba(93, 64, 55, 0.2);
+}
+
+.gallery-caption {
+    text-align: center;
+    margin-top: 10px;
+    color: var(--umber);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 8px 0;
+}
+
+/* Удаляем старые стили заглушек */
+.img-placeholder {
+    display: none !important;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .gallery-img {
+        height: 200px;
+    }
+    .gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .gallery-grid {
+        grid-template-columns: 1fr;
+    }
+}
